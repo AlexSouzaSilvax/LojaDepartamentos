@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>DP</title>        
+    </h:head>
+
+    <h:body >
+
+        <div style="height: 80px; background-color: #16164E; text-align: center; ">            
+            <p:outputLabel style="color:white; font-size:42px;" value="Loja de Departamentos" ></p:outputLabel>
+        </div>
+
+        <h:form id="frmLista" >
+            <p:messages id="messages5" closable="true" ><p:autoUpdate/></p:messages>
+
+            <br/>
+
+            <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-10,ui-grid-col-0,ui-grid-col-0,ui-grid-col-0" rendered="#{produtoController.tela == 0}" >
+                <h2 style="color:black">Cadastro de Produtos</h2>
+
+                <p:inputText value="#{produtoController.pesquisa}"/>
+
+                <p:commandButton value="Buscar" actionListener="#{produtoController.lista()}" update="listaPesquisa" />
+                <p:commandButton value="Novo" immediate="true" actionListener="#{produtoController.novo()}" update=":frmDetalhe :frmLista" />
+
+            </p:panelGrid>
+
+            <div class="Container100 Responsive100" >
+                <p:dataTable id="listaPesquisa" value="#{produtoController.listaProdutos}" var="p" rendered="#{produtoController.tela == 0}" reflow="true" emptyMessage="Lista vazia" paginator="true" rows="15"  rowsPerPageTemplate="15,50,100">
+
+                    <p:column headerText="ID" sortBy="#{p.id}">
+                        <p:commandLink value="#{p.id}" title="#{p.id}" actionListener="#{produtoController.seleciona(p)}" ajax="false" update=":frmDetalhe :frmLista" />
+                    </p:column>
+
+                    <p:column headerText="Nome" sortBy="#{p.nome}">
+                        <p:commandLink value="#{p.nome}" title="#{p.nome}" actionListener="#{produtoController.seleciona(p)}" ajax="false" update=":frmDetalhe :frmLista" />
+                    </p:column>
+
+                    <p:column headerText="QTD Estoque" sortBy="#{p.qtdEstoque}">
+                        <p:commandLink value="#{p.qtdEstoque}" title="#{p.qtdEstoque}" actionListener="#{produtoController.seleciona(p)}" ajax="false" update=":frmDetalhe :frmLista" />
+                    </p:column>
+
+                    <p:column headerText="Valor venda" sortBy="#{p.valorVenda}">
+                        <h:outputText value="#{p.valorVenda}" title="#{p.valorVenda}" />
+                    </p:column>                               
+
+                    <p:column headerText="Detalhe" width="8%">
+                        <p:commandButton icon="fa fa-search"  actionListener="#{produtoController.seleciona(p)}" ajax="false" update=":frmDetalhe :frmLista"/>
+                    </p:column>
+
+                </p:dataTable>
+
+            </div>
+        </h:form>
+
+        <h:form id="frmDetalhe">
+            <p:panelGrid rendered="#{produtoController.tela == 1}"  columns="5"  layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-10,ui-grid-col-3,ui-grid-col-0,ui-grid-col-0">
+
+                <p:panelGrid>
+                    <h2>Produtos</h2>
+                </p:panelGrid>
+                <p:panelGrid></p:panelGrid>
+
+                <p:commandButton value="Salvar" actionListener="#{produtoController.salvar()}" update=":frmDetalhe :frmLista" />            
+                <p:commandButton value="Voltar" immediate="true" actionListener="#{produtoController.voltar()}" update=":frmDetalhe :frmLista" />
+
+                <p:commandButton value="Deletar" styleClass="RedButton" actionListener="#{produtoController.deletar()}"  update=":frmDetalhe :frmLista" >
+                    <p:confirm header="Confirmação" message="Deseja excluir o registro?" icon="ui-icon-alert" />
+                </p:commandButton>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" />
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" />
+                </p:confirmDialog>                                                              
+
+            </p:panelGrid>
+
+            <p:separator/>
+
+            <p:panelGrid rendered="#{produtoController.tela == 1}" columns="1" layout="grid" styleClass="ui-panelgrid-blank"  >                           
+
+                <p:panelGrid  columns="3" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-3,ui-grid-col-3" >                           
+
+                    <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank"  > 
+                        <h:outputText value="Nome"  />                
+                        <p:inputText value="#{produtoController.produto.nome}" required="true" requiredMessage="[NOME] é Obrigatório!"/>                
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" >
+                        <h:outputText value="Quantidade em Estoque" />
+                        <!--p:inputText value="#{produtoController.produto.qtdEstoque}" required="true" requiredMessage="[EMAIL] é Obrigatório!"/-->                                    
+                        <h:outputText value="#{produtoController.produto.qtdEstoque}" />
+                    </p:panelGrid> 
+
+                </p:panelGrid>
+
+                <p:panelGrid  columns="3" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-3,ui-grid-col-3" >  
+
+                    <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                        <h:outputText value="Valor venda"  />                
+                        <p:inputText  value="#{produtoController.produto.valorVenda}" required="true" requiredMessage="[LOGIN] é Obrigatório!"/>                
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank" > 
+                        <h:outputText value="Valor compra" />
+                        <p:inputText value="#{produtoController.produto.valorCompra}" required="true" requiredMessage="[SENHA] é Obrigatório!"/>                
+                    </p:panelGrid> 
+
+                </p:panelGrid>
+
+                <p:separator/>                               
+
+            </p:panelGrid>                            
+        </h:form>
+
+    </h:body>
+</html>
